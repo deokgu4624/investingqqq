@@ -303,7 +303,7 @@ return(
 )
 ```
 ### 재무정보 개요 페이지
-데이터의 국가명은 영어였기때문에 `i18next` 라이브러리로 한글명을 대응시켰습니다.
+`useEffect`는 axios로 검색한 기업의 프로필, 손익계산서, 대차대조표, 분단위 차트 데이터를 받아옵니다. 데이터는 `data1~data4`로 각각 들어갑니다. 429에러가 나면 재실행됩니다.
 ```javascript
   useEffect(()=>{
     async function getData(){
@@ -327,6 +327,177 @@ return(
     getData();
   },[symbol])
 ```
-
+받아온 프로필 정보를 표시합니다.
+```javascript
+<Card>
+  <ListGroup>
+    <ListGroup.Item><p>Symbol</p><p>{data1?.[0].symbol}</p></ListGroup.Item>
+    <ListGroup.Item><p>Price</p><p>${data1?.[0].price}</p></ListGroup.Item>
+    <ListGroup.Item><p>Changes</p><p>{data1?.[0].changes}</p></ListGroup.Item>
+    <ListGroup.Item><p>Beta</p><p>{data1?.[0].beta}</p></ListGroup.Item>
+    <ListGroup.Item><p>CEO</p><p>{data1?.[0].ceo}</p></ListGroup.Item>
+    <ListGroup.Item><p>Volume Avg.</p><p>{data1?.[0].volAvg}M</p></ListGroup.Item>
+    <ListGroup.Item><p>Market Cap</p><p>{data1?.[0].mktCap}B</p></ListGroup.Item>
+    <ListGroup.Item><p>52Week Range</p><p>{data1?.[0].range}</p></ListGroup.Item>
+  </ListGroup>
+</Card>
+```
+분단위 차트에 들어갈 데이터입니다. `substring`은 날짜의 시간부분만 반환합니다.
+```javascript
+const close = data2.map((item)=>{
+  return item.close;
+})
+const date = data2.map((item)=>{
+  return item.date.substring(11, 16);
+})
+```
+손익계산서 차트에 들어갈 데이터입니다. `substring`은 날짜의 연도만 반환합니다.
+```javascript
+const revenue = data3.map((item)=>{
+  return item.revenue;
+})
+const netIncome = data3.map((item)=>{
+  return item.netIncome;
+})
+const statementDate = data3?.map((item)=>{
+  return item.date.substring(0,4);
+})
+```
+대차대조표 차트에 들어갈 데이터입니다. `substring`은 날짜의 연도만 반환합니다.
+```javascript
+const assets = data4.map((item)=>{
+  return item.totalAssets;
+})
+const liabilities = data4.map((item)=>{
+  return item.totalLiabilities;
+})
+const balanceDate = data4.map((item)=>{
+  return item.date.substring(0,4);
+  })
+```
+### 재무정보 손익계산서
+`useEffect`는 axios로 손익계산서 데이터를 받아옵니다. 데이터는 `data`로 들어갑니다.
+```javascript
+useEffect(()=>{
+  axios.get(`https://financialmodelingprep.com/api/v3/income-statement/${symbol}?limit=120&apikey=${apiKey}`)
+      .then((res)=>{
+        setStatement(res.data);
+      })
+},[symbol])
+```
+`map`함수는 받아온 데이터의 카테고리별로 연도에 따라 표로 반환합니다.
+```javascript
+<Container>
+  <h3>Income statement</h3>
+  <Card style={{marginBottom:'60px'}}>
+    <Table responsive bordered hover className={'table'}>
+    <thead>
+      <tr>
+        <td className={'category'}>Year</td>
+        {statement?.map((item, index)=>{
+          return(
+            <td className={'category'} key={index}>{item.calendarYear}</td>
+          )
+        })}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td className={'category'}>Revenue</td>
+      {statement?.map((item, index)=>{
+          return(
+            <td key={index}>{item.revenue}</td>
+          )
+        })}
+      </tr>
+      <tr>
+      <td className={'category'}>Cost of Revenue</td>
+      {statement?.map((item, index)=>{
+          return(
+            <td key={index}>{item.costOfRevenue}</td>
+          )
+        })}
+      </tr>
+      <tr>
+      <td className={'category'}>Gross Profit</td>
+      {statement?.map((item, index)=>{
+          return(
+            <td key={index}>{item.grossProfit}</td>
+          )
+        })}
+      </tr>
+      ...
+      <tr>
+      <td className={'category'}>Weighted Average Shares Outstanding (Diluted)</td>
+      {statement?.map((item, index)=>{
+          return(
+            <td key={index}>{item.weightedAverageShsOutDil}</td>
+          )
+        })}
+      </tr>
+    </tbody>
+    </Table>
+  </Card>
+</Container>
+```
+### 재무정보 대차대조표
+`useEffect`는 axios로 대차대조표 데이터를 받아옵니다. 데이터는 `data`로 들어갑니다.
+```javascript
+useEffect(()=>{
+  axios.get(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${symbol}?apikey=${apiKey}&limit=120`)
+      .then((res)=>{
+        setBalance(res.data);
+      })
+},[symbol])
+```
+`map`함수는 받아온 데이터의 카테고리별로 연도에 따라 표로 반환합니다.
+```javascript
+<Container>
+  <h3>Balance Sheet Statement</h3>
+  <Card style={{marginBottom:'60px'}}>
+    <Table responsive bordered hover>
+    <thead>
+      <tr>
+        <td className={'category'}>Year</td>
+        {balance?.map((item, index)=>{
+          return(
+            <td key={index} className={'category'}>{item.calendarYear}</td>
+          )
+        })}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td className={'category'}>Total assets</td>
+      {balance?.map((item, index)=>{
+          return(
+            <td key={index}>{item.totalAssets}</td>
+          )
+        })}
+      </tr>
+      <tr>
+      <td className={'category'}>Total Current Assets</td>
+      {balance?.map((item, index)=>{
+          return(
+            <td key={index}>{item.totalCurrentAssets}</td>
+          )
+        })}
+      </tr>
+      ...
+      <tr>
+      <td className={'category'}>Net Debt</td>
+      {balance?.map((item, index)=>{
+          return(
+            <td key={index}>{item.netDebt}</td>
+          )
+        })}
+      </tr>
+    </tbody>
+    </Table>
+  </Card>
+</Container>
+```
+### 재무정보 차트
+### 재무정보 프로필
 ## 사용한 라이브러리
-`react` `axios` `react-router-dom` `react-bootstrap` `apexcharts` `i18next`
+`react` `axios` `react-router-dom` `react-bootstrap` `apexcharts`
