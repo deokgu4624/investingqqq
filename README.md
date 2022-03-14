@@ -13,13 +13,16 @@ http://investingqqq.netlify.app/
 4. 
 ## 개요
 React, Axios, Financial Modeling Prep API를 사용한 주식시장 뉴스 및 시세 웹사이트입니다.
-![제목 없음](https://user-images.githubusercontent.com/37141223/147278046-f695d191-5496-4217-9764-418e2cd45156.png)
-
+![제목 없음](https://user-images.githubusercontent.com/37141223/158133915-31091b72-8cb9-4c2d-8233-386c683c0471.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158135475-9bbde6c2-6a50-4ef5-a9b1-18b321a309f8.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158135614-a7cd7ecc-9aab-4ed3-95d2-2a811b28c819.png)
 확진자 추이와 최근 동향 차트입니다. 최근 동향은 7일간을 표시합니다.
-![제목 없음](https://user-images.githubusercontent.com/37141223/147287373-f9a4290a-a048-4cee-980e-f6db4c4f0123.png)
-
+![제목 없음](https://user-images.githubusercontent.com/37141223/158134795-fb33e98f-7de2-42a4-bcf3-6cd10f8c8c4e.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158135818-db44b4c3-d894-453b-8864-7d411ab72783.png)
 국가별 현황표 입니다. 누적 확진자, 누적 사망자, 누적 격리자, 누적 완치자, 치명률을 표시합니다.
-![제목 없음](https://user-images.githubusercontent.com/37141223/147287926-f5bd47be-ed3f-4ec4-ade6-2b57dba2aa74.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158134985-89d8e498-63a8-4b75-ac3e-a40f4fdcdef5.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158135911-6eb9b314-e45c-4a25-95ba-4917f06c0873.png)
+![제목 없음](https://user-images.githubusercontent.com/37141223/158136026-197f745f-79b4-4cc8-91ec-5a487712ea3a.png)
 
 ## 과정
 ### Axios로 데이터 받아오기
