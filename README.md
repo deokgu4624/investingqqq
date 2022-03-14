@@ -498,6 +498,118 @@ useEffect(()=>{
 </Container>
 ```
 ### 재무정보 차트
+`useEffect`는 해당 기업의 차트 데이터를 가져옵니다. 가져온 데이터는 `data`로 들어갑니다.
+```javascript
+useEffect(()=>{
+  isLoading(false);
+  axios.get(`https://financialmodelingprep.com/api/v3/historical-chart/1min/${symbol}?apikey=${apiKey}`)
+    .then(res=>{
+      setData(res.data);
+      isLoading(true);
+    })
+},[symbol])
+```
+차트에 들어갈 데이터입니다. `map`함수는 시가와 날짜를 반환합니다. `substring`은 날짜의 시간부분만 반환합니다.
+```javascript
+const close = data?.map((item)=>{
+  return item.close;
+})
+const date = data?.map((item)=>{
+  return item.date.substring(10, 16);
+})
+```
+차트 옵션입니다. 가공된 데이터는 차트 옵션의 `data`로 들어갑니다.
+```javascript
+const areaChart = {
+  series: [{
+    name: "Price",
+    data: close.reverse().slice(0, 200)
+  }],
+  options: {
+    chart: {
+      toolbar:{
+        show: false
+      },
+      animations: {
+        enabled: true,
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      type: 'category',
+      categories: date.reverse().slice(0, 200),
+      tickAmount: window.innerWidth > 575 ? 10 : 5,
+      labels:{
+        rotate: 0,
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return Math.round(value);
+        }
+      },
+    },
+    colors: ['#0de67a'],
+    legend: {
+      horizontalAlign: 'left'
+    },
+    stroke: {
+      width: 2,
+      curve: 'straight',
+    }
+  },
+}
+```
 ### 재무정보 프로필
+`useEffect`는 해당 기업의 프로필 정보를 가져옵니다. 가져온 데이터는 `data`로 들어갑니다.
+```javascript
+useEffect(()=>{
+  isLoading(false);
+  axios.get(`https://financialmodelingprep.com/api/v3/historical-chart/1min/${symbol}?apikey=${apiKey}`)
+    .then(res=>{
+      setData(res.data);
+      isLoading(true);
+    })
+},[symbol])
+```
+받아온 데이터들은 각각의 정보들로 표시됩니다.
+```javascript
+<Container>
+  <h3>Profile</h3>
+  <Card style={{marginBottom:'60px'}}>
+    <Card.Body>
+      <Row>
+        <Col xs={6} sm={6}>
+          <Card.Title>CEO</Card.Title>
+          <Card.Text>{profile?.[0].ceo}</Card.Text>
+        </Col>
+        <Col xs={6} sm={6}>
+          <Card.Title>Sector</Card.Title>
+          <Card.Text>{profile?.[0].sector}</Card.Text>
+        </Col>
+        <Col xs={6} sm={6}>
+          <Card.Title>Industry</Card.Title>
+          <Card.Text>{profile?.[0].industry}</Card.Text>
+        </Col>
+        <Col xs={6} sm={6}>
+          <Card.Title>Website</Card.Title>
+          <Card.Text>{profile?.[0].website}</Card.Text>
+        </Col>
+        <Col xs={6} sm={6}>
+          <Card.Title>Exchange</Card.Title>
+          <Card.Text>{profile?.[0].exchange}</Card.Text>
+        </Col>
+      </Row>
+      <Row style={{marginTop:'30px'}}>
+        <Card.Title>Description</Card.Title>
+        <Card.Text>{profile?.[0].description}</Card.Text>
+      </Row>
+    </Card.Body>
+  </Card>
+</Container>
+```
 ## 사용한 라이브러리
 `react` `axios` `react-router-dom` `react-bootstrap` `apexcharts`
